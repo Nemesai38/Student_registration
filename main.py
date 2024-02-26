@@ -98,10 +98,41 @@ def clear_all():
     img = ""
 
 
+# ########################Save Command############################
+def save_data():
+    R1 = Registration.get()
+    N1 = Name.get()
+    C1 = Class.get()
+    try:
+        G1 = gender
+    except:
+        messagebox.showerror("Error", "Select Gender!")
+    D2 = DOB.get()
+    D1 = Date.get()
+    Rel = Religion.get()
+    S1 = Skill.get()
+    fathername = F_Name.get()
+    mothername = M_Name.get()
+    F1 = Father_Occupation.get()
+    M1 = Mother_Occupation.get()
+
+    print(R1)
+    print(N1)
+    print(C1)
+    print(G1)
+    print(D2)
+    print(D1)
+    print(Rel)
+    print(S1)
+    print(fathername)
+    print(mothername)
+    print(F1)
+    print(M1)
 
 
 # gender selection
 def selection():
+    global gender
     value = radio.get()
     if value == 1:
         gender = "Male"
@@ -121,6 +152,7 @@ imageicon3 = PhotoImage(file="images/search.png")
 Srch = Button(root, text="Search", compound=LEFT, image=imageicon3, width=123, bg="#68ddfa", font="arial 13 bold")
 Srch.place(x=1060, y=66)
 
+# search button with icon
 imageicon4 = PhotoImage(file="images/switch.png")
 update_button = Button(root, image=imageicon4, bg="#cdd4d8")
 update_button.place(x=110, y=64)
@@ -219,7 +251,7 @@ lbl.place(x=0, y=0)
 
 # buttons
 Button(root, text="Upload", width=19, height=2, font="arial 12 bold", bg="lightblue", command=show_image).place(x=1000, y=370)
-save_button = Button(root, text="Save", width=19, height=2, font="arial 12 bold", bg="lightgreen")
+save_button = Button(root, text="Save", width=19, height=2, font="arial 12 bold", bg="lightgreen", command=save_data)
 save_button.place(x=1000, y=450)
 Button(root, text="Reset", width=19, height=2, font="arial 12 bold", bg="lightpink", command=clear_all).place(x=1000, y=530)
 Button(root, text="Exit", width=19, height=2, font="arial 12 bold", bg="grey", command=exit_form).place(x=1000, y=610)
