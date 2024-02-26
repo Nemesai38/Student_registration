@@ -41,6 +41,65 @@ else:
     file.save('Student_data.xlsx')
 
 
+# Exit Window command
+def exit_form():
+    root.destroy()
+
+
+# Upload Image command
+def show_image():
+    filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select Image File", filetypes=(("JPG File", "*.jpg"),
+                                                                                                        ("PNG File", "*.png"),
+                                                                                                        ("All Files", "*.txt")))
+    img = Image.open(filename)
+    resized_image = img.resize((200, 200))
+    photo2 = ImageTk.PhotoImage(resized_image)
+    lbl.config(image=photo2)
+    lbl.image = photo2
+
+
+# ######################Registration NO.####################################
+# it is created to automatically enter registration no.
+
+def registration_no():
+    file = openpyxl.load_workbook('Student_data.xlsx')
+    sheet = file.active
+    row = sheet.max_row
+
+    max_row_value = sheet.cell(row=row, column=1).value
+
+    try:
+        Registration.set(max_row_value + 1)
+    except:
+        Registration.set("1")
+
+
+# ######################Clear All Command###################33
+def clear_all():
+    global img
+    Name.set("")
+    DOB.set("")
+    Religion.set("")
+    Skill.set("")
+    F_Name.set("")
+    M_Name.set("")
+    Father_Occupation.set("")
+    Mother_Occupation.set("")
+    Class.set("Select Class")
+
+    registration_no()
+
+    save_button.config(state="normal")
+
+    img1 = PhotoImage(file='images/passport.png')
+    lbl.config(image=img1)
+    lbl.image = img1
+
+    img = ""
+
+
+
+
 # gender selection
 def selection():
     value = radio.get()
@@ -73,10 +132,11 @@ Label(root, text="Date:", font="arial 13", fg=framebg, bg=background).place(x=50
 Registration = StringVar()
 Date = StringVar()
 
-reg_entry = Entry(root, textvariable=Registration, width=15, font="arial 12")
+reg_entry = Entry(root, textvariable=Registration, width=15, font="arial 12", state="readonly")
 reg_entry.place(x=170, y=150)
 
-# registration number
+registration_no()
+
 today = date.today()
 d1 = today.strftime("%d/%m/%Y")
 date_entry = Entry(root, textvariable=Date, width=15, font="arial 12")
@@ -142,15 +202,27 @@ Label(obj2, text="Mother's Name:", font="arial 13", bg=framebg, fg=framefg).plac
 Label(obj2, text="Occupation:", font="arial 13", bg=framebg, fg=framefg).place(x=500, y=100)
 
 M_Name = StringVar()
-M_entry = Entry(obj2, textvariable=F_Name, width=25, font="arial 12")
-M_entry.place(x=630, y=50)
+m_entry = Entry(obj2, textvariable=M_Name, width=25, font="arial 12")
+m_entry.place(x=630, y=50)
 
 Mother_Occupation = StringVar()
 MO_entry = Entry(obj2, textvariable=Mother_Occupation, width=20, font="arial 12")
 MO_entry.place(x=630, y=100)
 
 # image box
-f = Frame(root)
+f = Frame(root, bd=3, bg="black", width=200, height=200, relief=GROOVE)
+f.place(x=1000, y=150)
+
+img = PhotoImage(file="images/passport.png")
+lbl = Label(f, bg="black", image=img)
+lbl.place(x=0, y=0)
+
+# buttons
+Button(root, text="Upload", width=19, height=2, font="arial 12 bold", bg="lightblue", command=show_image).place(x=1000, y=370)
+save_button = Button(root, text="Save", width=19, height=2, font="arial 12 bold", bg="lightgreen")
+save_button.place(x=1000, y=450)
+Button(root, text="Reset", width=19, height=2, font="arial 12 bold", bg="lightpink", command=clear_all).place(x=1000, y=530)
+Button(root, text="Exit", width=19, height=2, font="arial 12 bold", bg="grey", command=exit_form).place(x=1000, y=610)
 
 
 root.mainloop()
