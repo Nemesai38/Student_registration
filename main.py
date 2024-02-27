@@ -5,7 +5,8 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 from tkinter.ttk import Combobox
-import openpyxl, xlrd
+import openpyxl
+import xlrd
 from openpyxl import Workbook
 import pathlib
 
@@ -18,6 +19,7 @@ root = Tk()
 root.title("Student Registration System")
 root.geometry("1250x700+210+100")
 root.config(bg=background)
+root.resizable(False, False)
 
 file = pathlib.Path('Student_data.xlsx')
 if file.exists():
@@ -48,11 +50,13 @@ def exit_form():
 
 # Upload Image command
 def show_image():
+    global filename
+    global img2
     filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select Image File", filetypes=(("JPG File", "*.jpg"),
                                                                                                         ("PNG File", "*.png"),
                                                                                                         ("All Files", "*.txt")))
-    img = Image.open(filename)
-    resized_image = img.resize((200, 200))
+    img2 = (Image.open(filename))
+    resized_image = img2.resize((190, 190))
     photo2 = ImageTk.PhotoImage(resized_image)
     lbl.config(image=photo2)
     lbl.image = photo2
@@ -71,7 +75,7 @@ def registration_no():
     try:
         Registration.set(max_row_value + 1)
     except:
-        Registration.set("1")
+        Registration.set(1)
 
 
 # ######################Clear All Command###################33
@@ -100,6 +104,7 @@ def clear_all():
 
 # ########################Save Command############################
 def save_data():
+    global img2
     R1 = Registration.get()
     N1 = Name.get()
     C1 = Class.get()
@@ -116,18 +121,37 @@ def save_data():
     F1 = Father_Occupation.get()
     M1 = Mother_Occupation.get()
 
-    print(R1)
-    print(N1)
-    print(C1)
-    print(G1)
-    print(D2)
-    print(D1)
-    print(Rel)
-    print(S1)
-    print(fathername)
-    print(mothername)
-    print(F1)
-    print(M1)
+    if N1 == "" or C1 == "" or D2 == "" or D1 == "" or Rel == "" or S1 == "" or fathername == "" or mothername == "" or F1 == "" or \
+            M1 == "":
+        messagebox.showerror("Error", "All fields must be filled!")
+    else:
+        file = openpyxl.load_workbook("Student_data.xlsx")
+        sheet = file.active
+        sheet.cell(column=1, row=sheet.max_row+1, value=R1)
+        sheet.cell(column=2, row=sheet.max_row, value=N1)
+        sheet.cell(column=3, row=sheet.max_row, value=C1)
+        sheet.cell(column=4, row=sheet.max_row, value=G1)
+        sheet.cell(column=5, row=sheet.max_row, value=D2)
+        sheet.cell(column=6, row=sheet.max_row, value=D1)
+        sheet.cell(column=7, row=sheet.max_row, value=Rel)
+        sheet.cell(column=8, row=sheet.max_row, value=S1)
+        sheet.cell(column=9, row=sheet.max_row, value=fathername)
+        sheet.cell(column=10, row=sheet.max_row, value=mothername)
+        sheet.cell(column=11, row=sheet.max_row, value=F1)
+        sheet.cell(column=12, row=sheet.max_row, value=M1)
+        file.save(r"Student_data.xlsx")
+
+        try:
+            img2.save("Student Images/" + str(R1) + ".jpg")
+        except:
+            messagebox.showinfo("Info", "Profile Picture is not available!!!!")
+
+        messagebox.showinfo("Info", "Successfully data entered!!!")
+
+        # clear entry boxes and image
+        clear_all()
+        # update registration number
+        registration_no()
 
 
 # gender selection
@@ -161,7 +185,7 @@ update_button.place(x=110, y=64)
 Label(root, text="Registration No:", font="arial 13", fg=framebg, bg=background).place(x=30, y=150)
 Label(root, text="Date:", font="arial 13", fg=framebg, bg=background).place(x=500, y=150)
 
-Registration = StringVar()
+Registration = IntVar()
 Date = StringVar()
 
 reg_entry = Entry(root, textvariable=Registration, width=15, font="arial 12", state="readonly")
@@ -171,7 +195,7 @@ registration_no()
 
 today = date.today()
 d1 = today.strftime("%d/%m/%Y")
-date_entry = Entry(root, textvariable=Date, width=15, font="arial 12")
+date_entry = Entry(root, textvariable=Date, width=15, font="arial 12", state="readonly")
 date_entry.place(x=550, y=150)
 
 Date.set(d1)
